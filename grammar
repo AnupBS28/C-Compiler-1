@@ -1,0 +1,157 @@
+S : program 
+
+program: 
+	  ext_dec
+	| program ext_dec
+	;
+
+ext_dec
+	: INT MAIN '(' ')' compound_statement
+	| VOID MAIN '(' ')' compound_statement
+	| declaration
+	| headers 	
+	;
+
+headers
+	: HASH INCLUDE HEADER_LITERAL 
+	| HASH INCLUDE '<' libraries '>'
+	;
+
+libraries
+	: STDIO
+	| STDLIB
+	| MATH
+	| STRING
+	| TIME
+	;
+
+compound_statement
+	: '{' '}' 
+	| '{' block_item_list '}'
+	;
+
+block_item_list
+	: block_item
+	| block_item_list block_item
+	;
+
+block_item
+	: declaration
+	| statement 	
+	;
+
+declaration
+	: type_specifier init_declarator_list ';'
+	;
+
+statement
+	: compound_statement
+	| expression_statement
+	| iteration_statement
+	;
+
+iteration_statement
+	: FOR '(' expression_statement expression_statement ')' statement
+	| FOR '(' expression_statement expression_statement expression ')' statement
+	| FOR '(' declaration expression_statement ')' statement	
+	| FOR '(' declaration expression_statement expression ')' statement
+	;
+
+type_specifier
+	: VOID 	
+	| CHAR 	
+	| INT 	
+	| FLOAT 
+	;
+
+init_declarator_list
+	: init_declarator 
+	| init_declarator_list ',' init_declarator
+	;
+
+init_declarator
+	: IDENTIFIER '=' CHARACTER_LITERAL
+	| IDENTIFIER '=' assignment_expression
+	| IDENTIFIER
+	;
+
+assignment_expression
+	: conditional_expression	
+	| unary_expression assignment_operator assignment_expression
+	;
+
+assignment_operator
+	: '='			
+	| ADD_ASSIGN	
+	| SUB_ASSIGN	
+	;
+
+conditional_expression
+	: equality_expression 
+	| equality_expression '?' expression ':' conditional_expression	
+	;
+
+expression_statement
+	: ';'				
+	| expression ';' 	
+	;
+
+expression
+	: assignment_expression		
+	| expression ',' assignment_expression 
+	;
+
+primary_expression 
+	: IDENTIFIER
+	| INTEGER_LITERAL
+	| FLOAT_LITERAL	
+	| '(' expression ')'				
+	;
+
+postfix_expression
+	: primary_expression		
+//	| postfix_expression '(' ')' 
+	| postfix_expression INC_OP	
+	| postfix_expression DEC_OP 
+	;
+
+unary_expression
+	: postfix_expression	
+	| unary_operator unary_expression 			
+	;
+
+unary_operator
+	: '+' 		
+	| '-'		
+	| '!'		
+	| INC_OP	
+	| DEC_OP	
+	;
+
+equality_expression
+	: relational_expression 
+	| equality_expression EQ_OP relational_expression
+	| equality_expression NE_OP relational_expression
+	;
+
+relational_expression
+	: additive_expression	
+	| relational_expression '<' additive_expression
+	| relational_expression '>' additive_expression
+	| relational_expression LE_OP additive_expression
+	| relational_expression GE_OP additive_expression	
+	;
+
+additive_expression
+	: multiplicative_expression	
+	| additive_expression '+' multiplicative_expression 	
+	| additive_expression '-' multiplicative_expression		
+	;
+
+multiplicative_expression
+	: unary_expression			
+	| multiplicative_expression '*' unary_expression 	
+	| multiplicative_expression '/' unary_expression	
+	| multiplicative_expression '%' unary_expression	
+	;
+
